@@ -26,3 +26,7 @@ export const loadModule = (cmpMeta: d.ComponentRuntimeMeta, hostRef: d.HostRef, 
     return importedModule[exportName];
   }, consoleError);
 };
+
+export const setModuleCache = (bundleId: string, m: any) => {
+  moduleCache.set(bundleId, m);
+};

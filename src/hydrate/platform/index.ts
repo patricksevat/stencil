@@ -8,6 +8,8 @@ export const loadModule = (cmpMeta: d.ComponentRuntimeMeta, _hostRef: d.HostRef,
   });
 };
 
+export const setModuleCache = (_bundleId: string, _m: any) => {/**/};
+
 export const getComponent = (tagName: string) => {
   return cstrs.get(tagName);
 };

@@ -127,6 +127,8 @@ export const registerComponents = (Cstrs: d.ComponentTestingConstructor[]) => {
   });
 };
 
+export const setModuleCache = (_bundleId: string, _m: any) => {/**/};
+
 export const isMemberInElement = (elm: any, memberName: string) => {
   if (elm != null) {
     if (memberName in elm) {

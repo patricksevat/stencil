@@ -5,7 +5,7 @@ import { connectedCallback } from './connected-callback';
 import { convertScopedToShadow, registerStyle } from './styles';
 import { disconnectedCallback } from './disconnected-callback';
 import { BUILD } from '@build-conditionals';
-import { doc, getHostRef, plt, registerHost, supportsShadowDom, win } from '@platform';
+import { doc, getHostRef, plt, registerHost, setModuleCache, supportsShadowDom, win } from '@platform';
 import { hmrStart } from './hmr-component';
 import { HYDRATE_ID, PLATFORM_FLAGS, PROXY_FLAGS } from './runtime-constants';
 import { appDidLoad, forceUpdate, postUpdateComponent } from './update-component';
@@ -135,4 +135,13 @@ export const bootstrapLazy = (lazyBundles: d.LazyBundlesRuntimeData, options: d.
 
   // Fallback appLoad event
   plt.jmp(() => appLoadFallback = setTimeout(appDidLoad, 30));
+};
+
+
+export const preloadModule = (m: any, runtimeData: d.LazyBundleRuntimeData) => {
+  const bundleId = ((typeof runtimeData[0] !== 'string')
+    ? runtimeData[0]['hostRef.$modeName$']
+    : runtimeData[0]) as string;
+
+  setModuleCache(bundleId, m);
 };

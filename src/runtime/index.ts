@@ -1,4 +1,4 @@
-export { bootstrapLazy } from './bootstrap-lazy';
+export { bootstrapLazy, preloadModule } from './bootstrap-lazy';
 export { defineCustomElement, proxyCustomElement } from './define-native';
 export { proxyNative, attachShadow } from './bootstrap-native';
 export { connectedCallback } from './connected-callback';

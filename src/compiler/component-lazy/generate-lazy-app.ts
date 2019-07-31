@@ -98,7 +98,7 @@ patchBrowser().then(options => {
 
 // This is for webpack
 const EXTERNAL_ENTRY = `
-import { bootstrapLazy, patchEsm, globals } from '@stencil/core';
+import { bootstrapLazy, preloadModule, patchEsm, globals } from '@stencil/core';
 
 export const defineCustomElements = (win, options) => {
   return patchEsm().then(() => {
@@ -106,6 +106,8 @@ export const defineCustomElements = (win, options) => {
     bootstrapLazy([/*!__STENCIL_LAZY_DATA__*/], options);
   });
 };
+
+export { bootstrapLazy, preloadModule };
 `;
 
 function generateLegacyLoader(config: d.Config, compilerCtx: d.CompilerCtx, outputTargets: d.OutputTargetDistLazy[]) {

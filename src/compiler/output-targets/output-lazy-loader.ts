@@ -34,6 +34,7 @@ async function generateLoader(config: d.Config, compilerCtx: d.CompilerCtx, outp
     'main': './index.cjs.js',
     'node:main': './node-main.js',
     'jsnext:main': './index.es2017.mjs',
+    'sync:main': './index.sync.mjs',
     'es2015': './index.es2017.mjs',
     'es2017': './index.es2017.mjs',
     'unpkg': './cdn.js',
@@ -62,6 +63,7 @@ module.exports.applyPolyfills = function() { return Promise.resolve() };
 module.exports.defineCustomElements = function() { return Promise.resolve() };
 `;
 
+  const syncLoaderContent = generateSyncLoader(config, loaderPath, es2017EntryPoint);
 
   const indexDtsPath = config.sys.path.join(loaderPath, 'index.d.ts');
   await Promise.all([
@@ -71,8 +73,25 @@ module.exports.defineCustomElements = function() { return Promise.resolve() };
     compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'index.cjs.js'), indexCjsContent),
     compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'cdn.js'), indexCjsContent),
     compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'index.es2017.mjs'), indexES2017Content),
-    compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'node-main.js'), nodeMainContent)
+    compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'node-main.js'), nodeMainContent),
+    compilerCtx.fs.writeFile(config.sys.path.join(loaderPath, 'index.sync.mjs'), syncLoaderContent)
   ]);
+}
+
+function generateSyncLoader(config: d.Config, loaderPath: string, es2017EntryPoint: string) {
+  const o: string[] = [
+    `import { bootstrapLazy, preloadModule } from '${normalizePath(config.sys.path.relative(loaderPath, es2017EntryPoint))}';`
+  ];
+
+  o.push(
+    `bootstrapLazy();`
+  );
+
+  o.push(
+    `preloadModule();`
+  );
+
+  return o.join('\n');
 }
 
 
