@@ -123,4 +123,31 @@ export const initializeComponent = async (elm: d.HostElement, hostRef: d.HostRef
   } else {
     schedule();
   }
+
+  // For CLONED components that are re-added to the DOM (like ngIf in AngularJS)
+  // AND do not use shadow-dom, remove all children that are not slot content
+  if (elm.classList.contains('hydrated') && BUILD.slotRelocation && !BUILD.hydrateServerSide && !BUILD.hydrateClientSide) {
+    const slotNodes = findSlotNodes(elm);
+    Array.from(elm.childNodes).forEach((node) => elm.removeChild(node));
+    slotNodes.forEach((slotNode) => elm.appendChild(slotNode));
+  }
+};
+
+const findSlotNodes = (node: Node, slotNodes: Node[] = []): Node[] => {
+  if (!node.childNodes) {
+    return slotNodes;
+  }
+
+  let i = 0;
+  for (; i < node.childNodes.length; i++) {
+    const child = node.childNodes.item(i) as any;
+    // Keep the is slotted content ('s-isc') and the comment node ('s-cn')
+    if ((child.getAttribute && child.getAttribute('s-isc') !== null) || child['s-cn']) {
+      slotNodes.push(child);
+    } else if (child.childNodes && child.childNodes.length) {
+      slotNodes = findSlotNodes(child, slotNodes);
+    }
+  }
+
+  return slotNodes;
 };

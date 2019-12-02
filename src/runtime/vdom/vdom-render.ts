@@ -529,6 +529,8 @@ const relocateSlotContent = (
               checkSlotFallbackVisibility = true;
               node['s-sn'] = slotNameAttr;
 
+              node.setAttribute && node.setAttribute('s-isc', '');
+
               // add to our list of nodes to relocate
               relocateNodes.push({
                 $slotRefNode$: childNode,
