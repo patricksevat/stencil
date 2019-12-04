@@ -4,7 +4,7 @@
 <script src="/build/testapp.js" nomodule></script>
 <style>button { display: block }</style>
 <body>
-  <div id="simple-parent">
+  <div id="simple-wrapper">
     <button
       onclick="toggle('simple')"
       id="toggle-simple"
@@ -12,11 +12,11 @@
       Toggle simple
     </button>
     <dom-reattach-clone id="simple">
-      <p>Slot content 1</p>
+      <p class="slotted-content">Slot content 1</p>
     </dom-reattach-clone>
   </div>
 
-  <div id="deep-parent">
+  <div id="deep-wrapper">
     <button
       onclick="toggle('deep')"
       id="toggle-deep"
@@ -24,11 +24,11 @@
       Toggle deep
     </button>
     <dom-reattach-clone-deep-slot id="deep">
-      <p>Slot content 1</p>
+      <p class="slotted-content">Slot content 1</p>
     </dom-reattach-clone-deep-slot>
   </div>
 
-  <div id="multiple-parent">
+  <div id="multiple-wrapper">
     <button
       onclick="toggle('multiple')"
       id="toggle-multiple"
@@ -36,34 +36,75 @@
       Toggle multiple
     </button>
     <dom-reattach-clone id="multiple">
-      <p>Slot content 1</p>
-      <p>Slot content 2</p>
-      <p>Slot content 3</p>
+      <p class="slotted-content">Slot content 1</p>
+      <p class="slotted-content">Slot content 2</p>
+      <p class="slotted-content">Slot content 3</p>
     </dom-reattach-clone>
   </div>
 
-  <div id="host-parent">
+  <div id="host-wrapper">
     <button onclick="toggle('host')" id="toggle-host">
       Toggle host
     </button>
     <dom-reattach-clone-host id="host">
-      <p>Slot content 1</p>
+      <p class="slotted-content">Slot content 1</p>
     </dom-reattach-clone-host>
   </div>
 
+  <div id="nested-wrapper">
+    <button onclick="toggle('nested')" id="toggle-nested">
+      Toggle nested
+    </button>
+    <dom-reattach-clone-host id="nested">
+      <p class="slotted-content">Slot content 1</p>
+      <dom-reattach-clone>
+        <p class="nested-slotted-content">Nested slot content 1</p>
+      </dom-reattach-clone>
+    </dom-reattach-clone-host>
+  </div>
+
+  <div id="parent-wrapper">
+    <button onclick="toggle('parent')" id="toggle-parent">
+      Toggle parent
+    </button>
+    <div id="parent">
+      <dom-reattach-clone>
+        <p class="slotted-content">Slot content 1</p>
+      </dom-reattach-clone>
+    </div>
+  </div>
+
+  <div id="inner-html-wrapper">
+    <button onclick="toggleInnerHTML()" id="toggle-inner-html">
+      Toggle innerHTML
+    </button>
+  </div>
 
   <script>
     var clones = {};
 
     function toggle (id) {
-      var element = document.querySelector('#' + id + '.hydrated');
-      var parent = document.querySelector('#' + id + '-parent');
+      var element = document.querySelector('#' + id);
+      var wrapper = document.querySelector('#' + id + '-wrapper');
 
       if (element) {
         clones[id] = element.cloneNode(true);
         element.remove();
       } else {
-        parent.appendChild(clones[id]);
+        wrapper.appendChild(clones[id]);
+      }
+    }
+
+    function toggleInnerHTML () {
+      var element = document.querySelector('#inner-html.hydrated');
+      var wrapper = document.querySelector('#inner-html-wrapper');
+      if (element) {
+        element.remove();
+      } else {
+        wrapper.innerHTML += '<dom-reattach-clone id="inner-html" class="hydrated">\n' +
+          '      <span class="component-mark-up">Component mark-up</span>\n' +
+          '      <p class="slotted-content" s-isc>Slot content 1</p>\n' +
+          '    </dom-reattach-clone>'
       }
     }
   </script>

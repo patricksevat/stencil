@@ -17,22 +17,37 @@ describe('dom-reattach-clone', function() {
     await waitForChanges();
     button.click();
     await waitForChanges();
-    expect(component.querySelectorAll('.component-mark-up').length).toBe(1);
+    return component;
   };
 
   it('should not double render', async () => {
-    await runTest('simple');
+    const component = await runTest('simple');
+    expect(component.querySelectorAll('.component-mark-up').length).toBe(1);
+    expect(component.querySelectorAll('.slotted-content').length).toBe(1);
   });
 
   it('should not double render with deeper slots', async () => {
-    await runTest('deep');
+    const component = await runTest('deep');
+    expect(component.querySelectorAll('.component-mark-up').length).toBe(1);
+    expect(component.querySelectorAll('.slotted-content').length).toBe(1);
   });
 
   it('should not double render with multiple slots', async () => {
-    await runTest('multiple');
+    const component = await runTest('multiple');
+    expect(component.querySelectorAll('.component-mark-up').length).toBe(1);
+    expect(component.querySelectorAll('.slotted-content').length).toBe(1);
   });
 
   it('should not double render with Host element', async () => {
-    await runTest('host');
+    const component = await runTest('host');
+    expect(component.querySelectorAll('.component-mark-up').length).toBe(1);
+    expect(component.querySelectorAll('.slotted-content').length).toBe(1);
+  });
+
+  it('should not double render with Nested components', async () => {
+    const component = await runTest('host');
+    expect(component.querySelectorAll('.component-mark-up').length).toBe(2);
+    expect(component.querySelectorAll('.slotted-content').length).toBe(1);
+    expect(component.querySelectorAll('.nested-slotted-content').length).toBe(1);
   });
 });
